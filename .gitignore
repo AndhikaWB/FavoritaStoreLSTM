@@ -1,0 +1,5 @@
+/.venv
+/data/*.csv
+!/data/sales.csv/
+/metastore_db
+/derby.log
