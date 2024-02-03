@@ -46,6 +46,11 @@ model = keras.models.Sequential([
 </details>
 
 <details>
-    <summary>Sample Prediction</summary>
+    <summary>Sample Prediction (General Model)</summary>
     <img src="misc/screenshot/screenshot_2.png">
+</details>
+
+<details>
+    <summary>Sample Prediction (Overfit Model)</summary>
+    <img src="misc/screenshot/screenshot_3.png">
 </details>
