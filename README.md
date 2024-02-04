@@ -1,7 +1,7 @@
 # Favorita Store LSTM
-Sales prediction based on real data released by Favorita grocery store (check on [Kaggle](https://www.kaggle.com/competitions/favorita-grocery-sales-forecasting)). The model were trained using multiple `fit`, where each fit contains data from specific store (up to 10 stores).
+Sales prediction based on real data released by Favorita grocery store (check on [Kaggle](https://www.kaggle.com/competitions/favorita-grocery-sales-forecasting)). The model were trained using repeated `fit`, where each fit used a data from specific store location (stopped at 10 stores).
 
-There's also custom sampling layer used in this model, which make use of bicubic interpolation rather than the default repeat (nearest interpolation) behavior from Keras `UpSampling1D` layer. The source code can be seen directly on the notebook (also for other custom layers).
+There's also a custom bicubic interpolation layer in the model (`ImprovedUpSampling1D`), which replace the nearest interpolation behavior (simple repeat value) from Keras `UpSampling1D` layer. It's used to smoothen the data more accurately.
 
 Current model architecture:
 ``` python
@@ -34,18 +34,31 @@ model = keras.models.Sequential([
 ])
 ```
 
-## Todo
-- Use different model for different store rather than training a generalized one
-- Implement LTTB, and compare prediction result when average pooling vs LTTB
-- Figure out how to make the model recognize holiday spike, or if not possible, use univariate LSTM or simpler algorithm (e.g. ARIMA)
-
 ## Screenshots
+The screenshots section showcases some of my experiment results in this project. Here's the effect of bicubic upsampling (miles better than nearest neighbor):
+
 <details>
     <summary>Bicubic Upsampling</summary>
     <img src="misc/screenshot/screenshot_1.png">
 </details>
 
+General model (trained using multiple stores data) will always have worse result than a store-specific model. Here's the example prediction of a general model:
+
 <details>
-    <summary>Sample Prediction</summary>
+    <summary>Sample Prediction (General Model)</summary>
     <img src="misc/screenshot/screenshot_2.png">
 </details>
+
+As you can see, the result can be too general or even just straight line in some cases. This can somehow be "fixed" by letting the model overfit on purpose:
+
+<details>
+    <summary>Sample Prediction (General Overfit Model)</summary>
+    <img src="misc/screenshot/screenshot_3.png">
+</details>
+
+It recognized most of the holiday spikes correctly, but of course it still safer to use store-specific model rather than an overfitted general model (which is what I did before making this experiment).
+
+## Todo
+- Implement LTTB, and compare the prediction result vs average pooling (current approach)
+- Figure out more ways to make the general model more sensitive to holiday spike, or just revert back to simpler algorithm (e.g. ARIMA, univariate LSTM). Time-series clustering next?
+
